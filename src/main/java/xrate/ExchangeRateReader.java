@@ -1,6 +1,8 @@
 package xrate;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Provide access to basic currency exchange rate services.
@@ -8,6 +10,7 @@ import java.io.IOException;
 public class ExchangeRateReader {
 
     private String accessKey;
+    private String baseURL;
 
     /**
      * Construct an exchange rate reader using the given base URL. All requests will
@@ -28,8 +31,7 @@ public class ExchangeRateReader {
          * the full URL.)
          */
 
-        // TODO Your code here
-
+        baseURL = this.baseURL;
         // Reads the Fixer.io API access key from the appropriate
         // environment variable.
         // You don't have to change this call.
@@ -84,10 +86,7 @@ public class ExchangeRateReader {
          *       currency code from the "rates" object. 
          */
 
-        // TODO Your code here
-
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        return getExchangeRate(currencyCode, "EUR", year, month, day);
     }
 
     /**
@@ -116,6 +115,21 @@ public class ExchangeRateReader {
         
         // TODO Your code here
 
+        String firstURL= "http://data.fixer.io/api/";
+        String access_key= "?access_key=";
+        String dayURL = Integer.toString(day);
+        String monthURL = Integer.toString(month);
+        String yearURL = Integer.toString(year);
+
+        if (day<10){
+            dayURL = "0" + dayURL;
+        }
+
+        if (month<10){
+            monthURL = "0" + monthURL;
+        }
+
+        String urlString = firstURL + yearURL + "-" + monthURL + "-" + dayURL + access_key;
         // Remove the next line when you've implemented this method.
         throw new UnsupportedOperationException();
     }
