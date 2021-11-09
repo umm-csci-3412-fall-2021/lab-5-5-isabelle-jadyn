@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 /**
  * Provide access to basic currency exchange rate services.
  */
@@ -31,7 +34,7 @@ public class ExchangeRateReader {
          * the full URL.)
          */
 
-        baseURL = this.baseURL;
+        this.baseURL = baseURL;
         // Reads the Fixer.io API access key from the appropriate
         // environment variable.
         // You don't have to change this call.
@@ -115,12 +118,13 @@ public class ExchangeRateReader {
         
         // TODO Your code here
 
-        String firstURL= "http://data.fixer.io/api/";
-        String access_key= "?access_key=";
+        String firstURL= baseURL;
         String dayURL = Integer.toString(day);
         String monthURL = Integer.toString(month);
         String yearURL = Integer.toString(year);
 
+        //checking if the date and month is less than 10, if so add 
+        // a preceeding 0
         if (day<10){
             dayURL = "0" + dayURL;
         }
@@ -129,8 +133,21 @@ public class ExchangeRateReader {
             monthURL = "0" + monthURL;
         }
 
-        String urlString = firstURL + yearURL + "-" + monthURL + "-" + dayURL + access_key;
-        // Remove the next line when you've implemented this method.
-        throw new UnsupportedOperationException();
+        // puts all the url parts together
+        String urlString = firstURL + yearURL + "-" + monthURL + "-" + dayURL + "?access_key=" +accessKey;
+
+        //reading from the url
+        URL url = new URL(urlString);
+        InputStream inputStream = url.openStream();
+        JSONTokener token= new JSONTokener(inputStream);
+        JSONObject object = new JSONObject(token);
+
+        // gets the rates of currency from each currency
+        float rateFromCurrency = object.getJSONObject("rates").getFloat(fromCurrency);
+        float rateToCurrency = object.getJSONObject("rates").getFloat(toCurrency);
+
+        // divides the rates of currency
+        return rateFromCurrency / rateToCurrency;
+
     }
 }
